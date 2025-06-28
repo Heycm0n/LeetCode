@@ -5,23 +5,33 @@ using System.Globalization;
 
 public class Solution
 {
-    public bool ContainsDuplicate(int[] nums)
+    public bool IsPalindrome(int x)
     {
-        HashSet<int> result = new HashSet<int>();
-        foreach (int num in nums)
+        if (x < 0) return false;
+
+        int dig = 0;
+        while (x / (int)Math.Pow(10, dig + 1) > 0)
         {
-            if (result.Contains(num)) return true;
-            else result.Add(num);
+            dig++;
         }
-        return false;
+
+        while (dig > 0)
+        {
+            int a = x / (int)Math.Pow(10, dig);
+            if ((x / (int)Math.Pow(10, dig)) != (x % 10)) return false;
+            x = (x % (int)Math.Pow(10, dig)) / 10;
+            dig -= 2;
+        }
+
+        return true;
     }
     static void Main(string[] args)
     {
         Solution solution = new Solution();
 
-        int[] nums = { 1, 1, 1, 3, 3, 4, 3, 2, 4, 2 };
+        int x = 121;
 
-        Console.WriteLine(solution.ContainsDuplicate(nums));
+        Console.WriteLine(solution.IsPalindrome(x));
     }
 }
 
