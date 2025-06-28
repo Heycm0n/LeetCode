@@ -5,23 +5,23 @@ using System.Globalization;
 
 public class Solution
 {
-    public int MaxSubArray(int[] nums)
+    public bool ContainsDuplicate(int[] nums)
     {
-        int maxSum = nums[0], currentSum = nums[0];
-        for (int i = 1; i < nums.Length; i++)
+        HashSet<int> result = new HashSet<int>();
+        foreach (int num in nums)
         {
-            currentSum = Math.Max(nums[i], currentSum + nums[i]);
-            maxSum = Math.Max(maxSum, currentSum);
+            if (result.Contains(num)) return true;
+            else result.Add(num);
         }
-        return maxSum;
+        return false;
     }
     static void Main(string[] args)
     {
         Solution solution = new Solution();
 
-        int[] nums = {-2, 1, -3, 4, -1, 2, 1, -5, 4 };
+        int[] nums = { 1, 1, 1, 3, 3, 4, 3, 2, 4, 2 };
 
-        Console.WriteLine(solution.MaxSubArray(nums));
+        Console.WriteLine(solution.ContainsDuplicate(nums));
     }
 }
 
