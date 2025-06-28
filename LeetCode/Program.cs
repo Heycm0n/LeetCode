@@ -5,26 +5,23 @@ using System.Globalization;
 
 public class Solution
 {
-    public bool IsValid(string s)
+    public int MaxSubArray(int[] nums)
     {
-        Stack<char> chars = new Stack<char>();
-        foreach (char c in s)
+        int maxSum = nums[0], currentSum = nums[0];
+        for (int i = 1; i < nums.Length; i++)
         {
-            if (c == '(') chars.Push(')');
-            else if (c == '[') chars.Push(']');
-            else if (c == '{') chars.Push('}');
-            else if ((chars.Count == 0) || (chars.Pop() != c)) return false;
+            currentSum = Math.Max(nums[i], currentSum + nums[i]);
+            maxSum = Math.Max(maxSum, currentSum);
         }
-        if (chars.Count == 0) return true;
-        else return false;
+        return maxSum;
     }
     static void Main(string[] args)
     {
         Solution solution = new Solution();
 
-        string str = "{}()[]{}";
+        int[] nums = {-2, 1, -3, 4, -1, 2, 1, -5, 4 };
 
-        Console.WriteLine(solution.IsValid(str));
+        Console.WriteLine(solution.MaxSubArray(nums));
     }
 }
 
