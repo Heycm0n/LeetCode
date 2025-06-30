@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Primitives;
 using System.ComponentModel.DataAnnotations;
@@ -5,33 +6,32 @@ using System.Globalization;
 
 public class Solution
 {
-    public bool IsPalindrome(int x)
+    public int FindLHS(int[] nums)
     {
-        if (x < 0) return false;
+        int Max_len = 0;
+        
+        Dictionary <int, int> NumCount = new Dictionary<int, int>();
 
-        int dig = 0;
-        while (x / (int)Math.Pow(10, dig + 1) > 0)
+        for (int i = 0; i < nums.Length; i++) 
         {
-            dig++;
+            if (NumCount.ContainsKey(nums[i])) { NumCount[nums[i]]++; }
+                else NumCount.Add(nums[i], 1);
         }
 
-        while (dig > 0)
+        foreach(int i in NumCount.Keys)
         {
-            int a = x / (int)Math.Pow(10, dig);
-            if ((x / (int)Math.Pow(10, dig)) != (x % 10)) return false;
-            x = (x % (int)Math.Pow(10, dig)) / 10;
-            dig -= 2;
+            if ((NumCount.ContainsKey(i+1))&&(NumCount[i] + NumCount[i + 1]) > Max_len) Max_len = (NumCount[i] + NumCount[i + 1]);
         }
 
-        return true;
+        return Max_len;
     }
     static void Main(string[] args)
     {
         Solution solution = new Solution();
 
-        int x = 121;
+        int[] x = {1,2,3,2,3,4,4};
 
-        Console.WriteLine(solution.IsPalindrome(x));
+        Console.WriteLine(solution.FindLHS(x));
     }
 }
 
