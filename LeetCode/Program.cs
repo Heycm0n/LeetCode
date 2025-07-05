@@ -8,53 +8,37 @@ using System.Globalization;
 
 public class Solution
 {
-    public bool SearchForSubWords(string str, List<string> words) 
-    {
-        words.Remove(str);
-        if (str.Length > 1)
+    public int max_sub = 0;
+    void func(int i, int j, int[] nums1, int[] nums2, int row) 
+    {     
+        if (((i-row) < 0) || ((j - row) < 0)) return; //Выходим если доходим до конца
+        if (nums1[i - row] == nums2[j - row])
         {
-            //Надо как то удалять просмотренные уже элементы чтоб они не лежали в списке и хламили. Возможно стоит сформировать какой нибудь словарь и отмечать там уже пройденные слова
-            str = str.Substring(0, str.Length-1);
-            if (words.Contains(str))
-            {
-                return SearchForSubWords(str, words);
-            }
-            else 
-            {
-                return false;
-            }
+            row++;
+            if (row > max_sub) max_sub = row;
+            func(i, j, nums1, nums2, row);
         }
-        else return true;
+        return;
     }
-    public string LongestWord(string[] words)
+    public int FindLength(int[] nums1, int[] nums2)
     {
-        
-        Array.Sort(words, (a, b) => b.Length.CompareTo(a.Length));
-        List<string> word_list = words.ToList();      
-        string Max_word = string.Empty;
-
-        foreach (string word in words) 
-        {
-            if (word.Length < Max_word.Length) return Max_word;
-
-            if (SearchForSubWords(word, word_list) == true) 
-            {          
-                if(Max_word == string.Empty) 
-                    Max_word = word;
-                else
-                    if (String.Compare(word, Max_word) < 0) 
-                        Max_word = word;
+        for (int i = nums1.Length - 1; i >= 0; i--)
+            for (int j = nums2.Length - 1; j >= 0; j--)
+            {
+                func(i, j, nums1, nums2, 0);
+                if (max_sub > i) break;
             }
-        }
-
-        return Max_word;
+           
+        return max_sub;
     }
     static void Main(string[] args)
     {
         Solution solution = new Solution();
 
-        string[] words = { "a", "banana", "app", "appl", "ap", "apply", "apple" };
-        string answ = solution.LongestWord(words);
+        //string[] words = { "a", "banana", "app", "appl", "ap", "apply", "apple" };
+        int[] nums1 = { 1, 1, 0, 0, 1 };
+        int[] nums2 = { 1, 1, 0, 0, 0 };
+        int answ = solution.FindLength(nums1, nums2);
         Console.WriteLine(answ);
 
     }
