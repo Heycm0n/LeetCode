@@ -1,39 +1,30 @@
 using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Extensions.FileSystemGlobbing.Internal.PathSegments;
 using Microsoft.Extensions.Primitives;
 using Microsoft.VisualBasic;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using System.Globalization;
+using System.Numerics;
+using System.Runtime.Intrinsics;
 
 public class Solution
 {
-    public bool IsOneBitCharacter(int[] bits)
+    public int MaxProfit(int[] prices, int fee)
     {
-        //если две единицы встречаютс€ в тексте то это точно 11, то есть удалив все 11 из текста мы гарантируем что в тексте остались только 10 и 0
-        //если после этого в тексте встречаютс€ 2 и более подр€д 0 то это значит что это 10 + 0, значит можно заменить все повтор€ющиес€ 0 одним. (кроме случа€ когда они в самом начале строки)
-        //потом в строке должно остатьс€ только 10
+        int cash = 0;           // ћаксимальна€ прибыль без акции
+        int hold = -prices[0];  // ћаксимальна€ прибыль с акцией (купили в первый день)
 
-        //Ћибо просто находим следующй за этим ноль. ≈сли он следующий то это точно один бит. ≈сли он через четное количество 1 то тоже 0, нечетное то 10.
-        int counter = 0;
-        for (int i = bits.Length - 2; i >= 0; i--) 
+        for (int i = 1; i < prices.Length; i++)
         {
-            if (bits[i] == 0)
-            {
-                break;
-            }
-            else 
-            {
-                counter++;
-            }
+            cash = Math.Max(cash, hold + prices[i] - fee); // ѕродаем или ничего не делаем
+            hold = Math.Max(hold, cash - prices[i]);        // ѕокупаем или ничего не делаем
         }
 
-        if (counter % 2 != 0) 
-            return false;
-        else 
-            return true;
-        
+        return cash; // ¬ конце выгоднее не иметь акций
     }
 
     static void Main(string[] args)
@@ -41,8 +32,9 @@ public class Solution
         Solution solution = new Solution();
 
         //string[] words = { "a", "banana", "app", "appl", "ap", "apply", "apple" };
-        int[] nums = { 1, 1, 1, 0 };
-        bool answ = solution.IsOneBitCharacter(nums);
+        int[] prices = { 2, 1, 4, 4, 2, 3, 2, 5, 1, 2 };
+        
+        int answ = solution.MaxProfit(prices, 1);
         Console.WriteLine(answ);
 
     }
