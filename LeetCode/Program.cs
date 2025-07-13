@@ -15,39 +15,27 @@ public class Solution
 {
     public int NumSubarrayProductLessThanK(int[] nums, int k)
     {
-        int answ = 0;
+        if (k <= 1)
+            return 0;
 
         int product = 1;
-        int right = 0;
+        int count = 0;
         int left = 0;
 
-        while (right < nums.Length) 
-        {          
+        for (int right = 0; right < nums.Length; right++)
+        {
             product *= nums[right];
-            if (product >= k) 
+
+            while (product >= k)
             {
-                if (left == right)
-                {
-                    product /= nums[left];
-                    left++;
-                    right++;
-                }
-                else
-                {                
-                    product /= nums[left];
-                    product /= nums[right];
-                    left++;
-                }                  
+                product /= nums[left];
+                left++;
             }
-            else
-            {
-                right++;
-                answ += right - left;
-            }
-            
+
+            count += right - left + 1;
         }
 
-        return answ;
+        return count;
     }
 
     static void Main(string[] args)
