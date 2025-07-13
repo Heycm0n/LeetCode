@@ -13,18 +13,41 @@ using System.Runtime.Intrinsics;
 
 public class Solution
 {
-    public int MaxProfit(int[] prices, int fee)
+    public int NumSubarrayProductLessThanK(int[] nums, int k)
     {
-        int cash = 0;           // Максимальная прибыль без акции
-        int hold = -prices[0];  // Максимальная прибыль с акцией (купили в первый день)
+        int answ = 0;
 
-        for (int i = 1; i < prices.Length; i++)
-        {
-            cash = Math.Max(cash, hold + prices[i] - fee); // Продаем или ничего не делаем
-            hold = Math.Max(hold, cash - prices[i]);        // Покупаем или ничего не делаем
+        int product = 1;
+        int right = 0;
+        int left = 0;
+
+        while (right < nums.Length) 
+        {          
+            product *= nums[right];
+            if (product >= k) 
+            {
+                if (left == right)
+                {
+                    product /= nums[left];
+                    left++;
+                    right++;
+                }
+                else
+                {                
+                    product /= nums[left];
+                    product /= nums[right];
+                    left++;
+                }                  
+            }
+            else
+            {
+                right++;
+                answ += right - left;
+            }
+            
         }
 
-        return cash; // В конце выгоднее не иметь акций
+        return answ;
     }
 
     static void Main(string[] args)
@@ -32,9 +55,9 @@ public class Solution
         Solution solution = new Solution();
 
         //string[] words = { "a", "banana", "app", "appl", "ap", "apply", "apple" };
-        int[] prices = { 2, 1, 4, 4, 2, 3, 2, 5, 1, 2 };
+        int[] nums = { 57, 44, 92, 28, 66, 60, 37, 33, 52, 38, 29, 76, 8, 75, 22 };
         
-        int answ = solution.MaxProfit(prices, 1);
+        int answ = solution.NumSubarrayProductLessThanK(nums, 18);
         Console.WriteLine(answ);
 
     }
