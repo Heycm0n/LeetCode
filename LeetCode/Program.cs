@@ -13,82 +13,47 @@ using System.Runtime.Intrinsics;
 
 public class Solution
 {
-    public int MinSum = int.MaxValue;
-    public int Recursive(string s1, string s2, int Sum) 
-    {        
-        FindSimilarSubString(s1, s2, Sum);
-        string s2_copy = s2;
-
-        for (int i = 0; i < s2.Length; i++)
-        {
-            s2_copy = s2.Remove(i, 1);
-            Recursive(s1, s2_copy, Sum + (int)s2[i]);
-        }
-
-        return Sum;
-    }
-    public void FindSimilarSubString(string s1, string s2, int Sum) 
-    {
-        int s_index = 0;
-        int complete_flag = 0;
-        for (int i = 0; i < s1.Length; i++) 
-        {
-            if ((complete_flag!= 1)&&(s2.Length > 0)&&(s1[i] == s2[s_index]))
-            {
-                s_index++;
-                if (s_index == s2.Length) 
-                {
-                    complete_flag = 1;
-                }              
-            }
-            else 
-            {
-                Sum += (int)s1[i];
-            }
-        }
-
-        if((complete_flag == 1)&&(Sum < MinSum))
-            MinSum = Sum;
-        return;
-    }
     public int MinimumDeleteSum(string s1, string s2)
     {
-        int sum = 0;
-        if (String.Compare(s1, s2) == 0) { return sum; }
+        int m = s1.Length;
+        int n = s2.Length;
 
-        if (s2.Length > s1.Length) //S1 должна быть более длинной строкой
+        // Создаем таблицу DP размером (m+1) x (n+1)
+        int[,] dp = new int[m + 1, n + 1];
+
+        // Заполняем первую строку и первый столбец нулями (базовый случай)
+        for (int i = 1; i <= m; i++)
         {
-            string tmp = s1;
-            s1 = s2;
-            s2 = tmp;
+            dp[i, 0] = dp[i - 1, 0] + s1[i - 1];
+        }
+        for (int j = 1; j <= n; j++)
+        {
+            dp[0, j] = dp[0, j - 1] + s2[j - 1];
         }
 
-        for (int i = 0; i < s1.Length; i++) //Убираем все символы которые не встречаются в обеих строках
+        // Заполняем таблицу DP
+        for (int i = 1; i <= m; i++)
         {
-            if (!s2.Contains(s1[i])) 
+            for (int j = 1; j <= n; j++)
             {
-                sum += (int)s1[i];
-                s1 = s1.Remove(i, 1);
-                i--;
-            }               
+                if (s1[i - 1] == s2[j - 1])
+                {
+                    // Если символы совпадают, добавляем их ASCII код к предыдущему результату
+                    dp[i, j] = dp[i - 1, j - 1];
+                }
+                else
+                {
+                    // Если символы не совпадают, выбираем минимальную сумму удалений
+                    dp[i, j] = Math.Min(
+                        dp[i - 1, j] + s1[i - 1],  // Удаляем символ из s1
+                        dp[i, j - 1] + s2[j - 1]   // Удаляем символ из s2
+                    );
+                }
+            }
         }
 
-        if (s1.Length == 0) 
-        {
-            for(int i =0; i< s2.Length; i++)
-                sum += (int)s2[i];
-            return sum;
-        } 
-
-        if (s2.Length > s1.Length) //После удаления все еще S1 должна быть более длинной строкой
-        {
-            string tmp = s1;
-            s1 = s2;
-            s2 = tmp;
-        }
-
-        Recursive(s1, s2, sum);
-        return MinSum;
+        // Результат находится в dp[m, n]
+        return dp[m, n];
     }
     static void Main(string[] args)
     {
