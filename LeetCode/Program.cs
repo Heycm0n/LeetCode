@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.FileSystemGlobbing.Internal.PathSegments;
+using Microsoft.Extensions.Internal;
 using Microsoft.Extensions.Primitives;
 using Microsoft.VisualBasic;
 using System.Collections.Generic;
@@ -13,59 +14,62 @@ using System.Runtime.Intrinsics;
 
 public class Solution
 {
-    public int MinimumDeleteSum(string s1, string s2)
+    public List<int> Blacklist;
+    public List<int> AltValues;
+    public int border;
+    public int N;
+    public Solution(int n, int[] blacklist)
     {
-        int m = s1.Length;
-        int n = s2.Length;
-
-        // Создаем таблицу DP размером (m+1) x (n+1)
-        int[,] dp = new int[m + 1, n + 1];
-
-        // Заполняем первую строку и первый столбец нулями (базовый случай)
-        for (int i = 1; i <= m; i++)
+        Blacklist = blacklist.ToList();
+        Blacklist.Sort();
+        N = n;
+        AltValues = new List<int>();
+        border = N - Blacklist.Count;
+        for (int i = border; i < N; i++) 
         {
-            dp[i, 0] = dp[i - 1, 0] + s1[i - 1];
-        }
-        for (int j = 1; j <= n; j++)
-        {
-            dp[0, j] = dp[0, j - 1] + s2[j - 1];
-        }
-
-        // Заполняем таблицу DP
-        for (int i = 1; i <= m; i++)
-        {
-            for (int j = 1; j <= n; j++)
+            if (!Blacklist.Contains(i))
             {
-                if (s1[i - 1] == s2[j - 1])
-                {
-                    // Если символы совпадают, добавляем их ASCII код к предыдущему результату
-                    dp[i, j] = dp[i - 1, j - 1];
-                }
-                else
-                {
-                    // Если символы не совпадают, выбираем минимальную сумму удалений
-                    dp[i, j] = Math.Min(
-                        dp[i - 1, j] + s1[i - 1],  // Удаляем символ из s1
-                        dp[i, j - 1] + s2[j - 1]   // Удаляем символ из s2
-                    );
-                }
+                AltValues.Add(i);
             }
         }
-
-        // Результат находится в dp[m, n]
-        return dp[m, n];
     }
+
+    public int Pick()
+    {
+        Random rnd = new Random();
+        int res = rnd.Next(0, border);
+
+        for (int i = 0; i < Blacklist.Count; i++) 
+        {
+            if (res == Blacklist[i]) return AltValues[i];
+        }
+        /*
+        if (Blacklist.Contains(res)) 
+        {
+            res = rnd.Next(0, AltValues.Count);
+            return AltValues[res];
+        } 
+         */
+        return res;
+    }
+}
+
+public class main
+{
     static void Main(string[] args)
     {
-        Solution solution = new Solution();
-
-        string s1 = "acacabcaabac";
-        string s2 = "accabaccccabaca";
+        //string s1 = "acacabcaabac";
+        //string s2 = "accabaccccabaca";
         //int[] nums = { 57, 44, 92, 28, 66, 60, 37, 33, 52, 38, 29, 76, 8, 75, 22 };
-        
-        int answ = solution.MinimumDeleteSum(s1, s2);
-        Console.WriteLine(answ);
+        //int[] a = new int[5] {1,2,3,4,51};
 
+        Solution solution = new Solution(3, new int[] { 2, 0 });
+   
+        for(int i = 0; i < 30; i++) 
+        {
+            int param_1 = solution.Pick(); 
+            Console.WriteLine(param_1);
+        }
     }
 }
 
