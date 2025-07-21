@@ -14,62 +14,36 @@ using System.Runtime.Intrinsics;
 
 public class Solution
 {
-    public List<int> Blacklist;
-    public List<int> AltValues;
-    public int border;
-    public int N;
-    public Solution(int n, int[] blacklist)
+    public string ToLowerCase(string s)
     {
-        Blacklist = blacklist.ToList();
-        Blacklist.Sort();
-        N = n;
-        AltValues = new List<int>();
-        border = N - Blacklist.Count;
-        for (int i = border; i < N; i++) 
+        char[] s_tmp = s.ToCharArray();
+        for (int i = 0; i < s.Length; i++) 
         {
-            if (!Blacklist.Contains(i))
+            if ((s_tmp[i]>64)&&(s_tmp[i] < 91))
             {
-                AltValues.Add(i);
+                s_tmp[i] = (char)(s[i] + 32);
             }
+           
         }
+  
+        return (new string(s_tmp));
     }
-
-    public int Pick()
+    
+    static void Main(string[] args)
     {
-        Random rnd = new Random();
-        int res = rnd.Next(0, border);
+        string s1 = "Hello";
+        //string s2 = "accabaccccabaca";
+        //int[] nums = { 57, 44, 92, 28, 66, 60, 37, 33, 52, 38, 29, 76, 8, 75, 22 };
+        //int[] a = new int[5] {1,2,3,4,51};
+        Solution solution = new Solution();
+        s1 = solution.ToLowerCase(s1);
+        Console.WriteLine(s1);
 
-        for (int i = 0; i < Blacklist.Count; i++) 
-        {
-            if (res == Blacklist[i]) return AltValues[i];
-        }
-        /*
-        if (Blacklist.Contains(res)) 
-        {
-            res = rnd.Next(0, AltValues.Count);
-            return AltValues[res];
-        } 
-         */
-        return res;
     }
 }
 
 public class main
 {
-    static void Main(string[] args)
-    {
-        //string s1 = "acacabcaabac";
-        //string s2 = "accabaccccabaca";
-        //int[] nums = { 57, 44, 92, 28, 66, 60, 37, 33, 52, 38, 29, 76, 8, 75, 22 };
-        //int[] a = new int[5] {1,2,3,4,51};
-
-        Solution solution = new Solution(3, new int[] { 2, 0 });
-   
-        for(int i = 0; i < 30; i++) 
-        {
-            int param_1 = solution.Pick(); 
-            Console.WriteLine(param_1);
-        }
-    }
 }
+
 
